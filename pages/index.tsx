@@ -8,10 +8,13 @@ import RecipeList from "@/components/recipe-list";
 import {
 	Box,
 	Container,
+	Fab,
 	Grid,
 	Paper,
 	Typography
 } from '@mui/material/';
+import AddIcon from '@mui/icons-material/Add';
+import Link from "next/link";
 
 const Item = styled(Paper)(({ theme }) => ({
 	backgroundColor: '#fff',
@@ -38,8 +41,15 @@ function Home() {
 					</Item>
 				</Grid>
 
-				<Grid item xs={9}>
-					<Item sx={{height: '100%', p: 5, position: 'relative'}}>
+				<Grid item xs={9} sx={{position:'relative'}}>
+					<Link href="/create">
+						<Fab color="primary" aria-label="add" 
+							sx={{position: 'absolute', float: 'right', top: 60, right: 20}}>
+							<AddIcon />
+						</Fab>
+					</Link>
+
+					<Item sx={{height: `calc(100vh - 200px)`, overflowY:'scroll', p: 5, position: 'relative'}}>
 						<RecipeList />
 					</Item>
 				</Grid>

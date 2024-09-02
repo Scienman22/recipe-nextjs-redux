@@ -1,6 +1,5 @@
 import React from 'react'
 import _ from 'lodash';
-import Link from 'next/link'
 
 import { useAppSelector, useAppDispatch } from "@/redux/hooks";
 import { recipeList, fetchRecipeList } from "@/redux/slices/recipes-slice";
@@ -11,9 +10,7 @@ import RecipeItem from '@/components/recipe-item';
 
 import {
 	Alert,
-	Fab
 } from '@mui/material/';
-import AddIcon from '@mui/icons-material/Add';
 
 export default function RecipeList() {
 	const dispatch = useAppDispatch();
@@ -52,13 +49,6 @@ export default function RecipeList() {
 
 	return (
 		<React.Fragment>
-			<Link href="/create">
-				<Fab color="primary" aria-label="add" 
-					sx={{position: 'absolute', float: 'right', top: 10, right: 10}}>
-					<AddIcon />
-				</Fab>
-			</Link>
-
 			{
 				allRecipes.length ? 
 					allRecipes.map((recipe) => (<RecipeItem key={recipe.id} recipe={recipe} />))

@@ -18,6 +18,7 @@ import {
 	Snackbar
 } from '@mui/material';
 import { SnackbarCloseReason } from '@mui/material/Snackbar';
+import RecipeConfirmRemoveDialog from './recipe-confirm-remove-dialog';
 
 export default function RecipeForm({
 	defaultData,
@@ -32,6 +33,7 @@ export default function RecipeForm({
 	const dispatch = useAppDispatch();
 
 	const [submitStatus, setSubmitStatus] = React.useState<{message:string, data:any, status:boolean}|null>(null);
+	const [confirmDialog, setConfirmDialog] = React.useState(false);
 
 	const handleOnSubmit = React.useCallback(async (formData: any) => {
 		try {
@@ -61,18 +63,22 @@ export default function RecipeForm({
 		}
 	}, [defaultData, imageUrl])
 
-	const handleOnDelete = React.useCallback(async (recipeId: number) => {
+	const handleOnRemoveRecipe = React.useCallback(async (recipeId: number|undefined) => {
 		try {
-			await dispatch(deleteRecipe(recipeId))
-				.unwrap()
-				.then(() => {
-					// handle result here
-					router.push('/');
-				})
-				.catch((responseData) => {
-					// handle error here
-					setSubmitStatus(responseData);
-				});
+			if (recipeId){
+				await dispatch(deleteRecipe(recipeId))
+					.unwrap()
+					.then(() => {
+						// handle result here
+						router.push('/');
+					})
+					.catch((responseData) => {
+						// handle error here
+						setSubmitStatus(responseData);
+					});
+			}
+
+			setConfirmDialog(false);
 			
 		} catch (error) {
 			console.error('Deleting Recipe Failed. >>>', error);
@@ -132,7 +138,7 @@ export default function RecipeForm({
 
 				<Box sx={{display:'flex', justifyContent:'space-between'}}>
 					{defaultData?.id ? <Button type="button" variant="contained" color="error" sx={{mt: 5}}
-						onClick={() => handleOnDelete(defaultData?.id)}
+						onClick={() => setConfirmDialog(true)}
 						disabled={isLoading}
 					>
 						{`Delete Recipe`}
@@ -145,6 +151,13 @@ export default function RecipeForm({
 					</Button>
 				</Box>
 			</Form>
+
+			<RecipeConfirmRemoveDialog
+				keepMounted
+				open={confirmDialog}
+				recipeId={defaultData?.id}
+				onClose={handleOnRemoveRecipe}
+			/>
 
 			<Snackbar open={!!submitStatus} autoHideDuration={6000} onClose={handleClose}>
 				<Alert
